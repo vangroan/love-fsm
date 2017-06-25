@@ -7,6 +7,19 @@ local BasicFsm = {}
 local meta = { __index = BasicFsm }
 
 
+-- Calls the function name on the given table, if the table is not nil and the
+-- function is not nil. Does nothing otherwise.
+function safe_call(t, func_name)
+    if t ~= nil then
+        local f = t[func_name]
+        if f ~= nil then
+            f(t)
+        end
+    end
+end
+
+
+-- Functions that will be delegated to the current state
 local delegates = {
         'update', 'keypressed', 'keyreleased'
     }
@@ -56,9 +69,20 @@ function BasicFsm:add_state(key, state)
 end
 
 
+function BasicFsm:_set_state(new_state)
+    safe_call(self.current, 'on_exit')
+    self.current = new_state
+    safe_call(self.current, 'on_enter')
+end
+
+
 function BasicFsm:set_state(key)
-    assert(self.states[key] ~= nil, 'State "' .. key .. '" does not exist')
-    self.current = self.states[key]
+    if key == nil then
+        self:_set_state(nil)
+    else
+        assert(self.states[key] ~= nil, 'State "' .. key .. '" does not exist')
+        self:_set_state(self.states[key])
+    end
 end
 
 
