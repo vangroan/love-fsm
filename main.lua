@@ -37,6 +37,22 @@ function tests.delegates()
 end
 
 
+function tests.setting_state()
+    local fsm = BasicFsm:new()
+    local state = { name = 'walk' }
+    fsm:add_state('state', state)
+    
+    fsm:set_state('state')
+    assert(fsm.current == state, 'Unexpected current state')
+    
+    fsm:set_state(nil)
+    assert(fsm.current == nil, 'Current state expected to be nil')
+    
+    local success, err = pcall(fsm.set_state, fsm, 'walk')
+    assert(success == false, 'Setting state of unknown key succeeded')
+end
+
+
 function tests.enter_and_exit()
     local fsm = BasicFsm:new()
     local state = {
