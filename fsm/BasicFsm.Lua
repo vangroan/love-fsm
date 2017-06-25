@@ -9,7 +9,7 @@ local meta = { __index = BasicFsm }
 
 -- Calls the function name on the given table, if the table is not nil and the
 -- function is not nil. Does nothing otherwise.
-function safe_call(t, func_name)
+local function safe_call(t, func_name)
     if t ~= nil then
         local f = t[func_name]
         if f ~= nil then
