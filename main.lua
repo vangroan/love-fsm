@@ -1,4 +1,6 @@
 -- Tests
+
+-- Print output immediately
 io.stdout:setvbuf("no")
 
 local BasicFsm = require 'fsm.BasicFsm'
