@@ -53,6 +53,34 @@ function tests.setting_state()
 end
 
 
+function tests.triggering_events()
+    local fsm = BasicFsm:new()
+    fsm:add_event('go_for_walk', 'walk')
+    
+    local walk_entered = false
+    
+    local stand = {
+        update = function(self, dt)
+            return 'go_for_walk'
+        end
+    }
+    local walk = {
+        on_enter = function(self)
+            walk_entered = true
+        end
+    }
+    
+    fsm:add_state('stand', stand)
+    fsm:add_state('walk', walk)
+    
+    fsm:set_state('stand')
+    fsm:update(0.16)
+    
+    assert(fsm.current == walk, 'State not changed to "walk"')
+    assert(walk_entered == true, 'Walk was not entered')
+end
+
+
 function tests.enter_and_exit()
     local fsm = BasicFsm:new()
     local state = {

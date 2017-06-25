@@ -64,7 +64,7 @@ end
 
 
 function BasicFsm:add_state(key, state)
-    assert(self.states[key] == nil, 'Key "' .. key .. '" exists in states')
+    assert(self.states[key] == nil, 'Key "' .. key .. '" already exists in states')
     self.states[key] = state
 end
 
@@ -91,8 +91,15 @@ end
 -------------------
 
 
+function BasicFsm:add_event(event_key, target)
+    assert(self.events[event_key] == nil, 'Key "' .. event_key .. '" already exists in events')
+    self.events[event_key] = target
+end
+
+
 function BasicFsm:trigger(event_key)
-    
+    assert(self.events[event_key] ~= nil, 'Event "' .. event_key .. '" does not exist')
+    self:set_state(self.events[event_key])
 end
 
 
