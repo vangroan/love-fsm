@@ -16,6 +16,21 @@ function tests.add_multiple()
 end
 
 
+function tests.delegates()
+    local fsm = BasicFsm:new()
+    local state = {
+        val = 0,
+        update = function(self, dt)
+            self.val = dt * 1000
+        end
+    }
+    fsm:add_state('stand', state)
+    fsm:set_state('stand')
+    fsm:update(0.16)
+    assert(state.val == 160, 'Update delegate on state was not called')
+end
+
+
 function love.load(arg)
     print('Starting tests...')
     for _, test in pairs(tests) do
