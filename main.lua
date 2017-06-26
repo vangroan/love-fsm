@@ -57,7 +57,7 @@ end
 
 function tests.triggering_events()
     local fsm = BasicFsm:new()
-    fsm:add_event('go_for_walk', 'walk')
+    fsm:add_event('go_for_walk', 'stand', 'walk')
     
     local walk_entered = false
     

@@ -50,6 +50,7 @@ function BasicFsm:new()
     local o = setmetatable({}, meta)
     
     o.current = nil
+    o.current_key = ''
     o.states = {}
     -- Events map an event name to a new state
     o.events = {}
@@ -69,19 +70,20 @@ function BasicFsm:set_state(key, state)
 end
 
 
-function BasicFsm:_change_state(new_state)
+function BasicFsm:_change_state(new_key, new_state)
     safe_call(self.current, 'on_exit')
     self.current = new_state
+    self.current_key = new_key
     safe_call(self.current, 'on_enter')
 end
 
 
 function BasicFsm:change_state(key)
     if key == nil then
-        self:_change_state(nil)
+        self:_change_state('', nil)
     else
         assert(self.states[key] ~= nil, 'State "' .. key .. '" does not exist')
-        self:_change_state(self.states[key])
+        self:_change_state(key, self.states[key])
     end
 end
 
@@ -91,15 +93,24 @@ end
 -------------------
 
 
-function BasicFsm:add_event(event_key, target)
-    assert(self.events[event_key] == nil, 'Key "' .. event_key .. '" already exists in events')
-    self.events[event_key] = target
+function BasicFsm:add_event(event_key, source_key, target_key)
+    if self.events[event_key] == nil then
+        self.events[event_key] = {}
+    end
+    
+    assert(self.events[event_key][source_key] == nil, 'Event "' .. event_key .. '" already has a transition from "' .. source_key .. '"')
+    self.events[event_key][source_key] = target_key
 end
 
 
 function BasicFsm:trigger(event_key)
     assert(self.events[event_key] ~= nil, 'Event "' .. event_key .. '" does not exist')
-    self:change_state(self.events[event_key])
+    
+    local source_key = self.current_key
+    assert(self.events[event_key][source_key] ~= nil, 'Event "' .. event_key .. '" transition has no source "' .. source_key)
+    
+    local target_key = self.events[event_key][source_key]
+    self:change_state(target_key)
 end
 
 
