@@ -98,6 +98,7 @@ function BasicFsm:add_event(event_key, source_key, target_key)
         self.events[event_key] = {}
     end
     
+    assert(self.events[event_key]['*'] == nil, 'Event "' .. event_key .. '" already has a transition from "*"')
     assert(self.events[event_key][source_key] == nil, 'Event "' .. event_key .. '" already has a transition from "' .. source_key .. '"')
     self.events[event_key][source_key] = target_key
 end

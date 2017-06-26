@@ -97,6 +97,15 @@ function tests.event_errors()
     fsm:add_event('stand_up', 'sit', 'stand')
     success, err = pcall(fsm.trigger, fsm, 'stand_up')
     assert(success == false, 'unexpected success when source does not exist')
+    
+    -- Event already exists
+    success, err = pcall(fsm.add_event, fsm, 'stand_up')
+    assert(success == false, 'Unexpected success when event already exists')
+    
+    -- Event is already transitions from any
+    fsm:add_event('jump', '*', 'that')
+    success, err = pcall(fsm.add_event, fsm, 'jump', 'this', 'that')
+    assert(success == false, 'Unexpected success when event already transitions from "*"')
 end
 
 
