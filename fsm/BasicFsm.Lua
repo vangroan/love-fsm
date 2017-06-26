@@ -106,10 +106,12 @@ end
 function BasicFsm:trigger(event_key)
     assert(self.events[event_key] ~= nil, 'Event "' .. event_key .. '" does not exist')
     
-    local source_key = self.current_key
-    assert(self.events[event_key][source_key] ~= nil, 'Event "' .. event_key .. '" transition has no source "' .. source_key)
-    
-    local target_key = self.events[event_key][source_key]
+    local target_key = self.events[event_key]['*']
+    if target_key == nil then
+        -- Transition only from current state
+        target_key = self.events[event_key][self.current_key]
+        assert(target_key ~= nil, 'Event "' .. event_key .. '" transition has no source "' .. self.current_key .. '"')
+    end
     self:change_state(target_key)
 end
 

@@ -100,6 +100,21 @@ function tests.event_errors()
 end
 
 
+-- Ensure that an event can be sourced from any states
+function tests.event_source_anything()
+    local fsm = BasicFsm:new()
+    fsm:set_state('stand', { name = 'state' })
+    fsm:set_state('walk', { name = 'walk' })
+    fsm:add_event('go', '*', 'walk')
+    
+    -- Should be able to transition to walk from any state
+    fsm:change_state('stand')
+    fsm:trigger('go')
+    
+    assert(fsm.current.name == 'walk', 'State did not transition to "walk"')
+end
+
+
 function tests.enter_and_exit()
     local fsm = BasicFsm:new()
     local state = {
