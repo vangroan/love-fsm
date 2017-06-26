@@ -83,6 +83,23 @@ function tests.triggering_events()
 end
 
 
+function tests.event_errors()
+    local fsm = BasicFsm:new()
+    fsm:set_state('stand', {})
+    
+    local success, err = false, ''
+    
+    -- Event doesn't exist
+    success, err = pcall(fsm.trigger, fsm, 'does_not_exist')
+    assert(success == false, 'Unexpected success when event does not exist')
+    
+    -- Event exists, but Source state does not exist
+    fsm:add_event('stand_up', 'sit', 'stand')
+    success, err = pcall(fsm.trigger, fsm, 'stand_up')
+    assert(success == false, 'unexpected success when source does not exist')
+end
+
+
 function tests.enter_and_exit()
     local fsm = BasicFsm:new()
     local state = {
