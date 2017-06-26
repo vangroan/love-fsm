@@ -12,8 +12,8 @@ local tests = {}
 -- Checks that a state cannot be added more than once on the same kay
 function tests.add_multiple()
     local fsm = BasicFsm:new()
-    fsm:add_state('stand', {})
-    local success, err = pcall(fsm.add_state, fsm, 'stand', {})
+    fsm:set_state('stand', {})
+    local success, err = pcall(fsm.set_state, fsm, 'stand', {})
     assert(success == false, 'Expected error to be thrown')
 end
 
@@ -32,8 +32,8 @@ function tests.delegates()
             self.val = dt * 1000
         end
     }
-    fsm:add_state('stand', state)
-    fsm:set_state('stand')
+    fsm:set_state('stand', state)
+    fsm:change_state('stand')
     fsm:update(0.16)
     assert(state.val == 160, 'Update delegate on state was not called')
 end
@@ -42,15 +42,15 @@ end
 function tests.setting_state()
     local fsm = BasicFsm:new()
     local state = { name = 'walk' }
-    fsm:add_state('state', state)
+    fsm:set_state('state', state)
     
-    fsm:set_state('state')
+    fsm:change_state('state')
     assert(fsm.current == state, 'Unexpected current state')
     
-    fsm:set_state(nil)
+    fsm:change_state(nil)
     assert(fsm.current == nil, 'Current state expected to be nil')
     
-    local success, err = pcall(fsm.set_state, fsm, 'walk')
+    local success, err = pcall(fsm.change_state, fsm, 'walk')
     assert(success == false, 'Setting state of unknown key succeeded')
 end
 
@@ -72,10 +72,10 @@ function tests.triggering_events()
         end
     }
     
-    fsm:add_state('stand', stand)
-    fsm:add_state('walk', walk)
+    fsm:set_state('stand', stand)
+    fsm:set_state('walk', walk)
     
-    fsm:set_state('stand')
+    fsm:change_state('stand')
     fsm:update(0.16)
     
     assert(fsm.current == walk, 'State not changed to "walk"')
@@ -94,10 +94,10 @@ function tests.enter_and_exit()
             self.val = self.val - 11
         end
     }
-    fsm:add_state('stand', state)
-    fsm:set_state('stand')
+    fsm:set_state('stand', state)
+    fsm:change_state('stand')
     assert(state.val == 7, 'State value was not updated on enter')
-    fsm:set_state(nil)
+    fsm:change_state(nil)
     assert(state.val == -4, 'State value was not udpated on exit')
 end
 
