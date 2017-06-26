@@ -9,7 +9,7 @@ local BasicFsm = require 'fsm.BasicFsm'
 local tests = {}
 
 
--- Checks that a state cannot be added more than once on the same kay
+-- Checks that a state cannot be added more than once on the same key
 function tests.add_multiple()
     local fsm = BasicFsm:new()
     fsm:set_state('stand', {})
